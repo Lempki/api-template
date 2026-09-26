@@ -16,10 +16,15 @@ def _configure_logging(level: str) -> None:
             "version": 1,
             "formatters": {
                 "json": {
-                    "format": '{"time":"%(asctime)s","level":"%(levelname)s","name":"%(name)s","message":"%(message)s"}'
+                    "format": (
+                        '{"time":"%(asctime)s","level":"%(levelname)s",'
+                        '"name":"%(name)s","message":"%(message)s"}'
+                    )
                 }
             },
-            "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "json"}},
+            "handlers": {
+                "console": {"class": "logging.StreamHandler", "formatter": "json"}
+            },
             "root": {"level": level, "handlers": ["console"]},
         }
     )
@@ -44,7 +49,11 @@ async def health() -> HealthResponse:
 
 # Template endpoint — rename the path and replace the implementation with your own.
 # Remove the Depends(require_auth) import from models.py once you no longer need this example.
-@app.post("/template/echo", response_model=TemplateResponse, dependencies=[Depends(require_auth)])
+@app.post(
+    "/template/echo",
+    response_model=TemplateResponse,
+    dependencies=[Depends(require_auth)],
+)
 async def echo(
     body: TemplateRequest,
     settings: Annotated[Settings, Depends(get_settings)],

@@ -9,6 +9,7 @@ class HealthResponse(BaseModel):
 
 # Template request and response models — rename or replace with your own.
 
+
 class TemplateRequest(BaseModel):
     text: str
 
