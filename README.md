@@ -5,10 +5,11 @@ This is a clean and minimal Python REST API template built with [FastAPI](https:
 ## Features
 
 * FastAPI with automatic OpenAPI documentation at `/docs`.
-* Bearer token authentication shared across all protected endpoints.
-* A `GET /health` endpoint for uptime monitoring.
-* Configuration via environment variables using `pydantic-settings`. No values are hardcoded.
-* Structured JSON logging with a configurable log level.
+* Bearer token authentication shared across all protected endpoints. A missing or wrong token gets `401 Unauthorized`, and tokens are compared in constant time.
+* A `GET /health` endpoint for uptime monitoring, which the Docker image also uses as its health check.
+* Configuration via environment variables using `pydantic-settings`. No values are hardcoded, and the service refuses to start with a placeholder or short secret.
+* Structured JSON logging with a configurable log level. Every line is one JSON object, including uvicorn's access log.
+* One version, set in `pyproject.toml`, which the health endpoint and the OpenAPI docs read from the installed package.
 * `pyproject.toml` with the `hatchling` build backend, managed with [uv](https://docs.astral.sh/uv/) and locked in `uv.lock`.
 * `Dockerfile` and `docker-compose.yml` for containerized deployment.
 * A test suite with `pytest` covering health, auth rejection, and a template endpoint.
@@ -67,7 +68,7 @@ All configuration is read from environment variables or from a `.env` file in th
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `DISCORD_API_SECRET` | Yes | — | Shared bearer token. Callers must send this value in the `Authorization` header. |
+| `DISCORD_API_SECRET` | Yes | None | Shared bearer token of at least 16 characters. Callers must send this value in the `Authorization` header. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`. |
 | `LOG_LEVEL` | No | `INFO` | Log verbosity. Accepts standard Python logging levels. |
 
 ## Project structure
@@ -123,7 +124,8 @@ The coding, prose, and commit conventions are documented in [discord-dev-standar
 
 ## Calling protected endpoints
 
-All endpoints except `/health` require a bearer token in the `Authorization` header:
+All endpoints except `/health` require a bearer token in the `Authorization` header.
+A request without the header or with a wrong token gets `401 Unauthorized` with a `WWW-Authenticate: Bearer` header:
 
 ```http
 POST /template/echo HTTP/1.1

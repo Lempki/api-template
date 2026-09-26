@@ -14,7 +14,9 @@ The shared conventions live in [discord-dev-standards](https://github.com/Lempki
 ## Layout
 
 * `src/api_template/main.py` defines the app, the lifespan, and the routes.
-* `src/api_template/config.py` reads settings from the environment with pydantic-settings.
+* `src/api_template/config.py` adds this service's settings to `ServiceSettings`.
+* `src/api_template/service.py` holds `ServiceSettings`, which validates the shared secret, and `service_version()`, which reads the version from pyproject.toml.
+* `src/api_template/logging_config.py` turns every log record, including uvicorn's, into one JSON line.
 * `src/api_template/auth.py` holds the bearer token dependency that protects every route except `/health`.
 * `src/api_template/models.py` holds the request and response models.
 
@@ -23,3 +25,5 @@ The shared conventions live in [discord-dev-standards](https://github.com/Lempki
 * `.template-manifest.toml` lists the core files that every derived API keeps identical to this template.
 * Change a core file here first. Derived APIs then pick it up with `dev-standards template-check --apply`.
 * Service-specific behavior belongs in files outside the manifest, such as `main.py`, `config.py`, and `models.py`.
+* Keep the version only in pyproject.toml, and keep `SERVICE` in main.py equal to the project name there.
+* `uv run mypy src` must pass in strict mode, because CI runs it.
