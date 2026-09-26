@@ -9,15 +9,16 @@ This is a clean and minimal Python REST API template built with [FastAPI](https:
 * A `GET /health` endpoint for uptime monitoring.
 * Configuration via environment variables using `pydantic-settings`. No values are hardcoded.
 * Structured JSON logging with a configurable log level.
-* `pyproject.toml` with the `hatchling` build backend and pinned dependency ranges.
+* `pyproject.toml` with the `hatchling` build backend, managed with [uv](https://docs.astral.sh/uv/) and locked in `uv.lock`.
 * `Dockerfile` and `docker-compose.yml` for containerized deployment.
 * A test suite with `pytest` covering health, auth rejection, and a template endpoint.
+* Tests, linting, formatting, and a Docker build run in CI on every push through the shared [discord-dev-standards](https://github.com/Lempki/discord-dev-standards) workflow.
 
 ## Prerequisites
 
 * [Docker](https://docs.docker.com/get-docker/) and Docker Compose for containerized setup.
 
-Running without Docker requires Python 3.12 or newer.
+Running without Docker requires Python 3.12 and [uv](https://docs.astral.sh/uv/). On Windows, install uv with `winget install --id astral-sh.uv`.
 
 ## Setup
 
@@ -36,17 +37,15 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-The script creates a `.venv` virtual environment if one does not already exist. It installs all dependencies and copies `.env.template` to `.env` on the first run. You must edit `.env` and set `DISCORD_API_SECRET` before starting the API.
+The script runs `uv sync`, which creates the `.venv` virtual environment if needed and installs the package with its locked dependencies. It copies `.env.template` to `.env` on the first run. You must edit `.env` and set `DISCORD_API_SECRET` before starting the API.
 
 If you prefer to perform the setup manually, follow these steps:
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-pip install -e ".[dev]"
+uv sync
 cp .env.template .env
 # Edit .env and set DISCORD_API_SECRET and other values as needed.
-uvicorn api_template.main:app --reload
+uv run uvicorn api_template.main:app --reload
 ```
 
 ### Docker
@@ -84,7 +83,10 @@ discord-api-template/
 │   └── test_api.py     # Health check and auth tests.
 ├── Dockerfile
 ├── docker-compose.yml
-├── pyproject.toml
+├── pyproject.toml      # Project metadata and dependencies.
+├── uv.lock             # Locked dependency versions.
+├── ruff.toml           # Lint and format settings on top of the shared baseline.
+├── .template-manifest.toml  # Core files that derived APIs keep identical to this template.
 ├── setup.bat           # Windows setup script.
 ├── setup.sh            # macOS and Linux setup script.
 └── .env.template       # Template for environment variables.
@@ -94,7 +96,7 @@ discord-api-template/
 
 Use the GitHub template button to create a new repository based on this project. Then follow these steps to customize it:
 
-1. **Rename the package.** In `pyproject.toml`, change the project `name` and the `packages` path under `[tool.hatch.build.targets.wheel]`. Rename the `src/api_template/` directory to match (e.g. `src/media_api/`). Update the import paths in all source files and in `Dockerfile`.
+1. **Rename the package.** In `pyproject.toml`, change the project `name` and the `packages` path under `[tool.hatch.build.targets.wheel]`. Rename the `src/api_template/` directory to match (e.g. `src/media_api/`). Update the import paths in all source files and in `Dockerfile`. Also set the new name as `package` under `[tool.dev-standards.template]` in `pyproject.toml` and as `known-first-party` in `ruff.toml`.
 
 2. **Add your dependencies.** Edit the `dependencies` list in `pyproject.toml`.
 
@@ -113,9 +115,11 @@ Use the GitHub template button to create a new repository based on this project.
 ## Running tests
 
 ```bash
-pip install -e ".[dev]"
-pytest
+uv run pytest
 ```
+
+Run every lint and format check with `uvx pre-commit run --all-files`, or install the hooks once with `uvx pre-commit install` so they run on each commit.
+The coding, prose, and commit conventions are documented in [discord-dev-standards](https://github.com/Lempki/discord-dev-standards).
 
 ## Calling protected endpoints
 
@@ -150,4 +154,3 @@ The following APIs were built from this template and can serve as fuller impleme
 | [discord-api-scraper](https://github.com/Lempki/discord-api-scraper) | Scrapes structured data from external websites. |
 | [discord-api-scheduler](https://github.com/Lempki/discord-api-scheduler) | Schedules persistent reminders delivered via Discord webhooks. |
 | [discord-api-morshu](https://github.com/Lempki/discord-api-morshu) | Generates Morshu TTS audio and video from text. |
-
