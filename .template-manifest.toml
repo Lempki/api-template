@@ -1,0 +1,21 @@
+# Files that APIs created from this template keep identical to it.
+# {package} stands for each repository's import package, set in [tool.dev-standards.template].
+# Change these files here first, then carry the change over with dev-standards template-check --apply.
+
+[[file]]
+path = "src/{package}/auth.py"
+
+[[file]]
+path = ".dockerignore"
+
+[[file]]
+path = "setup.sh"
+
+[[file]]
+path = "setup.bat"
+
+[[file]]
+path = ".pre-commit-config.yaml"
+
+[[file]]
+path = ".github/dependabot.yml"
