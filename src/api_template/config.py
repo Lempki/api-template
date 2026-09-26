@@ -1,18 +1,21 @@
+"""This service's settings, read from the environment or from .env."""
+
 from functools import lru_cache
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from .service import ServiceSettings
+
+__all__ = ["Settings", "get_settings"]
 
 
-class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
+class Settings(ServiceSettings):
+    """The shared settings plus this service's own.
 
-    discord_api_secret: str
-    log_level: str = "INFO"
-
-    # Add your service-specific settings here, for example:
-    # my_setting: str = "default"
+    Add service-specific fields here.
+    Each field reads the environment variable of the same name in upper case.
+    """
 
 
 @lru_cache
 def get_settings() -> Settings:
+    """Returns the settings, read once and then cached for the process."""
     return Settings()
