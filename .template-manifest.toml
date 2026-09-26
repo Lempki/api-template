@@ -6,6 +6,15 @@
 path = "src/{package}/auth.py"
 
 [[file]]
+path = "src/{package}/logging_config.py"
+
+[[file]]
+path = "src/{package}/service.py"
+
+[[file]]
+path = "tests/test_shared.py"
+
+[[file]]
 path = ".dockerignore"
 
 [[file]]
