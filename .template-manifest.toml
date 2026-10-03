@@ -1,6 +1,7 @@
 # Files that APIs created from this template keep identical to it.
 # {package} stands for each repository's import package, set in [tool.dev-standards.template].
-# Change these files here first, then carry the change over with dev-standards template-check --apply.
+# Change these files here first.
+# Then run dev-standards template-check --template <path-to-this-template> --apply in each derived repository.
 
 [[file]]
 path = "src/{package}/auth.py"
