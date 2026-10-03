@@ -1,6 +1,6 @@
 # api-template
 
-This is a clean and minimal Python REST API template built with [FastAPI](https://fastapi.tiangolo.com/) and [Uvicorn](https://www.uvicorn.org/). It is designed to be used as a starting point for small API services, standalone HTTP backends that bots and other clients call over the network instead of bundling heavy dependencies locally.
+This is a clean and minimal Python REST API template built with [FastAPI](https://fastapi.tiangolo.com/) and [Uvicorn](https://uvicorn.dev/). It is designed to be used as a starting point for small API services, standalone HTTP backends that bots and other clients call over the network instead of bundling heavy dependencies locally.
 
 ## Features
 
