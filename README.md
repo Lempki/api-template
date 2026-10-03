@@ -13,7 +13,7 @@ This is a clean and minimal Python REST API template built with [FastAPI](https:
 * `pyproject.toml` with the `hatchling` build backend, managed with [uv](https://docs.astral.sh/uv/) and locked in `uv.lock`.
 * `Dockerfile` and `docker-compose.yml` for containerized deployment.
 * A test suite with `pytest` covering health, auth rejection, and a template endpoint.
-* Tests, linting, formatting, and a Docker build run in CI on every push through the shared [discord-dev-standards](https://github.com/Lempki/discord-dev-standards) workflow.
+* Tests, linting, formatting, strict type checking, and a Docker build run in CI on every push to `main` and on every pull request through the shared [discord-dev-standards](https://github.com/Lempki/discord-dev-standards) workflow.
 
 ## Prerequisites
 
@@ -57,10 +57,11 @@ Alternatively, you can run the API as a Docker container.
 2. Build and start the container:
 
    ```
-   docker-compose up --build
+   docker compose up --build
    ```
 
 The API listens on port `8000` by default.
+The service keeps no state, so the container needs no volume.
 
 ## Configuration
 
@@ -69,7 +70,7 @@ All configuration is read from environment variables or from a `.env` file in th
 | Variable | Required | Default | Description |
 |---|---|---|---|
 | `DISCORD_API_SECRET` | Yes | None | Shared bearer token of at least 16 characters. Callers must send this value in the `Authorization` header. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`. |
-| `LOG_LEVEL` | No | `INFO` | Log verbosity. Accepts standard Python logging levels. |
+| `LOG_LEVEL` | No | `INFO` | Log verbosity. Accepts `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`. Every log line, including uvicorn's access log, is one JSON object. |
 
 ## Project structure
 
@@ -77,11 +78,14 @@ All configuration is read from environment variables or from a `.env` file in th
 discord-api-template/
 ├── src/api_template/
 │   ├── main.py         # FastAPI application, lifespan, and route definitions.
-│   ├── config.py       # Environment variable reader via pydantic-settings.
+│   ├── config.py       # This service's settings on top of ServiceSettings.
+│   ├── service.py      # Shared settings, secret validation, and the version lookup.
+│   ├── logging_config.py  # JSON logging for every logger, including uvicorn's.
 │   ├── auth.py         # Bearer token dependency used to protect endpoints.
 │   └── models.py       # Pydantic request and response models.
 ├── tests/
-│   └── test_api.py     # Health check and auth tests.
+│   ├── test_api.py     # Tests for this service's own routes.
+│   └── test_shared.py  # Tests for the shared auth, settings, logging, and version code.
 ├── Dockerfile
 ├── docker-compose.yml
 ├── pyproject.toml      # Project metadata and dependencies.
@@ -97,7 +101,7 @@ discord-api-template/
 
 Use the GitHub template button to create a new repository based on this project. Then follow these steps to customize it:
 
-1. **Rename the package.** In `pyproject.toml`, change the project `name` and the `packages` path under `[tool.hatch.build.targets.wheel]`. Rename the `src/api_template/` directory to match (e.g. `src/media_api/`). Update the import paths in all source files and in `Dockerfile`. Also set the new name as `package` under `[tool.dev-standards.template]` in `pyproject.toml` and as `known-first-party` in `ruff.toml`.
+1. **Rename the package.** In `pyproject.toml`, change the project `name` and the `packages` path under `[tool.hatch.build.targets.wheel]`. Rename the `src/api_template/` directory to match (e.g. `src/media_api/`). The source files import each other relatively, so only `tests/test_api.py` and the `CMD` line in `Dockerfile` name the package. Also set the new name as `package` under `[tool.dev-standards.template]` in `pyproject.toml` and as `known-first-party` in `ruff.toml`. Set `SERVICE` in `main.py` to the new project name, because the version is read from the installed project of that name. Then run `uv sync` so `uv.lock` records the new name.
 
 2. **Add your dependencies.** Edit the `dependencies` list in `pyproject.toml`.
 
@@ -109,14 +113,15 @@ Use the GitHub template button to create a new repository based on this project.
 
 6. **Remove the template endpoint.** Delete the `/template/echo` route and the `TemplateRequest`/`TemplateResponse` models once you have your own routes in place.
 
-7. **Update the `docker-compose.yml` port.** Change `8000:8000` to the port assigned to your service.
+7. **Update the `docker-compose.yml` port.** Change the host side of `8000:8000` to the port assigned to your service, such as `8001:8000`. The container itself keeps listening on port 8000.
 
-8. **Write tests.** Add test functions to `tests/test_api.py`.
+8. **Write tests.** Add test functions to `tests/test_api.py`. Leave `tests/test_shared.py` unchanged, because it is a core file.
 
 ## Running tests
 
 ```bash
 uv run pytest
+uv run mypy src
 ```
 
 Run every lint and format check with `uvx pre-commit run --all-files`, or install the hooks once with `uvx pre-commit install` so they run on each commit.
