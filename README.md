@@ -1,6 +1,6 @@
-# discord-api-template
+# api-template
 
-This is a clean and minimal Python REST API template built with [FastAPI](https://fastapi.tiangolo.com/) and [Uvicorn](https://www.uvicorn.org/). It is designed to be used as a starting point for Discord companion API services, standalone HTTP backends that Discord bots call over the network instead of bundling heavy dependencies locally.
+This is a clean and minimal Python REST API template built with [FastAPI](https://fastapi.tiangolo.com/) and [Uvicorn](https://www.uvicorn.org/). It is designed to be used as a starting point for small API services, standalone HTTP backends that bots and other clients call over the network instead of bundling heavy dependencies locally.
 
 ## Features
 
@@ -38,14 +38,14 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-The script runs `uv sync`, which creates the `.venv` virtual environment if needed and installs the package with its locked dependencies. It copies `.env.template` to `.env` on the first run. You must edit `.env` and set `DISCORD_API_SECRET` before starting the API.
+The script runs `uv sync`, which creates the `.venv` virtual environment if needed and installs the package with its locked dependencies. It copies `.env.template` to `.env` on the first run. You must edit `.env` and set `API_SECRET` before starting the API.
 
 If you prefer to perform the setup manually, follow these steps:
 
 ```bash
 uv sync
 cp .env.template .env
-# Edit .env and set DISCORD_API_SECRET and other values as needed.
+# Edit .env and set API_SECRET and other values as needed.
 uv run uvicorn api_template.main:app --reload
 ```
 
@@ -53,7 +53,7 @@ uv run uvicorn api_template.main:app --reload
 
 Alternatively, you can run the API as a Docker container.
 
-1. Copy `.env.template` to `.env` and set `DISCORD_API_SECRET`.
+1. Copy `.env.template` to `.env` and set `API_SECRET`.
 2. Build and start the container:
 
    ```
@@ -69,13 +69,13 @@ All configuration is read from environment variables or from a `.env` file in th
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `DISCORD_API_SECRET` | Yes | None | Shared bearer token of at least 16 characters. Callers must send this value in the `Authorization` header. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`. |
+| `API_SECRET` | Yes | None | Shared bearer token of at least 16 characters. Callers must send this value in the `Authorization` header. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`. |
 | `LOG_LEVEL` | No | `INFO` | Log verbosity. Accepts `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`. Every log line, including uvicorn's access log, is one JSON object. |
 
 ## Project structure
 
 ```
-discord-api-template/
+api-template/
 ├── src/api_template/
 │   ├── main.py         # FastAPI application, lifespan, and route definitions.
 │   ├── config.py       # This service's settings on top of ServiceSettings.
@@ -140,7 +140,7 @@ Content-Type: application/json
 {"text": "hello"}
 ```
 
-Discord bots calling this API should use `httpx.AsyncClient` with the token set as a default header:
+A Python client calling this API can use `httpx.AsyncClient` with the token set as a default header:
 
 ```python
 import httpx
@@ -157,10 +157,10 @@ The following APIs were built from this template and can serve as fuller impleme
 
 | Service | Description |
 |---|---|
-| [discord-api-media](https://github.com/Lempki/discord-api-media) | Resolves YouTube, SoundCloud, and Spotify track metadata and stream URLs. |
-| [discord-api-scraper](https://github.com/Lempki/discord-api-scraper) | Scrapes structured data from external websites. |
-| [discord-api-scheduler](https://github.com/Lempki/discord-api-scheduler) | Schedules persistent reminders delivered via Discord webhooks. |
-| [discord-api-morshu](https://github.com/Lempki/discord-api-morshu) | Generates Morshu TTS audio and video from text. |
+| [api-media](https://github.com/Lempki/api-media) | Resolves YouTube, SoundCloud, and Spotify track metadata and stream URLs. |
+| [api-scraper](https://github.com/Lempki/api-scraper) | Scrapes structured data from external websites. |
+| [api-scheduler](https://github.com/Lempki/api-scheduler) | Schedules persistent reminders delivered via Discord webhooks. |
+| [api-morshu](https://github.com/Lempki/api-morshu) | Generates Morshu TTS audio and video from text. |
 
 ## License
 

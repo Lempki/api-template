@@ -8,7 +8,7 @@ import os
 from fastapi.testclient import TestClient
 
 SECRET = "test-secret-0123456789"
-os.environ["DISCORD_API_SECRET"] = SECRET
+os.environ["API_SECRET"] = SECRET
 
 from api_template.main import app  # noqa: E402
 

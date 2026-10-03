@@ -1,7 +1,7 @@
-# discord-api-template
+# api-template
 
-A FastAPI template for the small HTTP services that the Discord bots call.
-Services such as discord-api-media and discord-api-scheduler are created from it.
+A FastAPI template for small HTTP services that bots and other clients call.
+Services such as api-media and api-scheduler are created from it.
 The shared conventions live in [discord-dev-standards](https://github.com/Lempki/discord-dev-standards), and its README is the rulebook for code, prose, and commits.
 
 ## Commands
@@ -24,7 +24,7 @@ The shared conventions live in [discord-dev-standards](https://github.com/Lempki
 ## Template rules
 
 * `.template-manifest.toml` lists the core files that every derived API keeps identical to this template.
-* Change a core file here first. Derived APIs then pick it up with `dev-standards template-check --template <path-to-discord-api-template> --apply`.
+* Change a core file here first. Derived APIs then pick it up with `dev-standards template-check --template <path-to-api-template> --apply`.
 * Service-specific behavior belongs in files outside the manifest, such as `main.py`, `config.py`, and `models.py`.
 * Keep the version only in pyproject.toml, and keep `SERVICE` in main.py equal to the project name there.
 * `uv run mypy src` must pass in strict mode, because CI runs it.
