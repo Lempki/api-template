@@ -13,7 +13,7 @@ This is a clean and minimal Python REST API template built with [FastAPI](https:
 * `pyproject.toml` with the `hatchling` build backend, managed with [uv](https://docs.astral.sh/uv/) and locked in `uv.lock`.
 * `Dockerfile` and `docker-compose.yml` for containerized deployment.
 * A test suite with `pytest` covering health, auth rejection, and a template endpoint.
-* Tests, linting, formatting, strict type checking, and a Docker build run in CI on every push to `main` and on every pull request through the shared [discord-dev-standards](https://github.com/Lempki/discord-dev-standards) workflow.
+* Tests, linting, formatting, strict type checking, and a Docker build run in CI on every push to `main` and on every pull request through the shared [dev-standards](https://github.com/Lempki/dev-standards) workflow.
 
 ## Prerequisites
 
@@ -125,7 +125,7 @@ uv run mypy src
 ```
 
 Run every lint and format check with `uvx pre-commit run --all-files`, or install the hooks once with `uvx pre-commit install` so they run on each commit.
-The coding, prose, and commit conventions are documented in [discord-dev-standards](https://github.com/Lempki/discord-dev-standards).
+The coding, prose, and commit conventions are documented in [dev-standards](https://github.com/Lempki/dev-standards).
 
 ## Calling protected endpoints
 
