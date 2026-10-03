@@ -161,3 +161,8 @@ The following APIs were built from this template and can serve as fuller impleme
 | [discord-api-scraper](https://github.com/Lempki/discord-api-scraper) | Scrapes structured data from external websites. |
 | [discord-api-scheduler](https://github.com/Lempki/discord-api-scheduler) | Schedules persistent reminders delivered via Discord webhooks. |
 | [discord-api-morshu](https://github.com/Lempki/discord-api-morshu) | Generates Morshu TTS audio and video from text. |
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+You may use, change, and share it, as long as every copy keeps the copyright notice and the license text.
