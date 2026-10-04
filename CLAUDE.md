@@ -26,6 +26,7 @@ Read it before changing code. When the repositories are cloned side by side, the
 
 * `.template-manifest.toml` lists the core files that every derived API keeps identical to this template.
 * `setup.bat` and `setup.sh` only install uv and then run `scripts/bootstrap.py`, which does every other step. Keep it on the standard library, because it runs before the dependencies exist. It is identical in api-template and discord-bot-template, so change it in both.
+* `run.bat` and `run.sh` run `scripts/run.py`, which reuses the helpers in `scripts/bootstrap.py`. The same rules apply to it.
 * Change a core file here first. Derived APIs then pick it up with `dev-standards template-check --template <path-to-api-template> --apply`.
 * Service-specific behavior belongs in files outside the manifest, such as `main.py`, `config.py`, and `models.py`.
 * Keep the version only in pyproject.toml, and keep `SERVICE` in main.py equal to the project name there.
