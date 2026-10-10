@@ -47,3 +47,6 @@ path = ".pre-commit-config.yaml"
 
 [[file]]
 path = ".github/dependabot.yml"
+
+[[file]]
+path = ".github/workflows/release.yml"

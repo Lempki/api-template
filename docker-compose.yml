@@ -4,6 +4,7 @@ name: api-template
 
 services:
   api:
+    image: ghcr.io/lempki/api-template:latest
     build: .
     ports:
       - "8000:8000"
