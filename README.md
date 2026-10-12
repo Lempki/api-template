@@ -83,7 +83,7 @@ When a service crashes right after it starts, the script shows the end of its lo
 In a downloaded release, the `update` action downloads the newest image and takes the run, setup, and compose files from it.
 `.env` and the other settings stay as they are.
 When the new release fails to start, it puts the previous image and files back, and later updates skip that release.
-The `schedule` action runs this update every night at 04:00, and each run writes what it did into `update.log`.
+The `schedule` action runs this update every night at 04:00, and each run writes what it did into `update.log`. With `UPDATE_WEBHOOK_URL` in `.env` set to a Discord webhook, an update that installs a new release or fails also posts a short message to that webhook's channel, naming the new versions or the problem. A night without a new release posts nothing. To get a webhook, open a channel's settings in Discord, choose Integrations, then Webhooks, then New Webhook, and copy its URL.
 
 ### Docker
 
