@@ -193,14 +193,15 @@ client = httpx.AsyncClient(
 
 ## Related services
 
-The following APIs were built from this template and can serve as fuller implementation examples.
+The following APIs were built from this template.
+They are private, so this list only names them.
 
 | Service | Description |
 |---|---|
-| [api-media](https://github.com/Lempki/api-media) | Resolves YouTube, SoundCloud, and Spotify track metadata and stream URLs. |
-| [api-scraper](https://github.com/Lempki/api-scraper) | Scrapes structured data from external websites. |
-| [api-scheduler](https://github.com/Lempki/api-scheduler) | Schedules persistent reminders delivered via Discord webhooks. |
-| [api-morshu](https://github.com/Lempki/api-morshu) | Generates Morshu TTS audio and video from text. |
+| api-media | Resolves YouTube, SoundCloud, and Spotify track metadata and stream URLs. |
+| api-scraper | Scrapes structured data from external websites. |
+| api-scheduler | Schedules persistent reminders delivered via Discord webhooks. |
+| api-morshu | Generates Morshu TTS audio and video from text. |
 
 ## License
 
