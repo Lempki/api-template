@@ -2,6 +2,14 @@
 # A downloaded release in a folder with a version in its name therefore finds the data of the previous one.
 name: api-template
 
+# Docker keeps at most two log files of 5 MB per container and overwrites the oldest.
+# Without a limit, a log grows until the container is recreated.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "5m"
+    max-file: "2"
+
 services:
   api:
     image: ghcr.io/lempki/api-template:latest
@@ -16,3 +24,4 @@ services:
       # Compose reads the secret from .env or the shell and stops with this message when it is missing.
       API_SECRET: ${API_SECRET:?Set API_SECRET in .env. The README shows how to generate one.}
     restart: unless-stopped
+    logging: *logging
