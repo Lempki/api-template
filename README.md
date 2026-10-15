@@ -73,7 +73,7 @@ The script also takes an action, such as `run.bat stop` on Windows or `./run.sh 
 | `stop` | Stops the containers. They stay stopped until the next start. |
 | `status` | Shows whether each container runs and is healthy, its version, and whether updates are automatic. |
 | `logs` | Follows the logs. Press Ctrl+C to stop following. |
-| `update` | Installs the newest release. In a Git clone, it pulls the latest code, rebuilds on fresh base images, and restarts. |
+| `update` | Installs the newest release. In a Git clone, it pulls the latest code, rebuilds on fresh base images, and restarts, then deletes the build cache that no build used for a week. |
 | `schedule` | Installs new releases automatically every night at 04:00. |
 | `unschedule` | Stops installing new releases automatically. |
 | `local` | Runs the project in the terminal without Docker. Press Ctrl+C to stop it. |
@@ -98,6 +98,10 @@ Alternatively, you can run the API as a Docker container.
 
 The API listens on port `8000` by default.
 The service keeps no state, so the container needs no volume.
+
+Docker keeps at most two log files of 5 MB and overwrites the oldest.
+The container may use at most 1 GB of memory.
+That is several times its normal use, so only a leak reaches it, and the container then restarts on its own.
 
 ## Configuration
 
