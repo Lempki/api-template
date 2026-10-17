@@ -9,10 +9,10 @@ license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.142.2",
+    "fastapi>=0.143.1",
     "uvicorn[standard]>=0.54.0",
-    "pydantic>=2.7",
-    "pydantic-settings>=2.3",
+    "pydantic>=2.14.1",
+    "pydantic-settings>=2.16.0",
 ]
 
 [dependency-groups]
