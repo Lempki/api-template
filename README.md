@@ -12,7 +12,7 @@ This is a clean and minimal Python REST API template built with [FastAPI](https:
 * One version, set in `pyproject.toml`, which the health endpoint and the OpenAPI docs read from the installed package.
 * `pyproject.toml` with the `hatchling` build backend, managed with [uv](https://docs.astral.sh/uv/) and locked in `uv.lock`.
 * `Dockerfile` and `docker-compose.yml` for containerized deployment.
-* A test suite with `pytest` covering health, auth rejection, and a template endpoint.
+* A test suite with `pytest` covering health, auth rejection, a template endpoint, and the setup and run scripts.
 * Tests, linting, formatting, strict type checking, and a Docker build run in CI on every push to `main` and on every pull request through the shared [dev-standards](https://github.com/Lempki/dev-standards) workflow.
 
 ## Prerequisites
@@ -71,16 +71,17 @@ The script also takes an action, such as `run.bat stop` on Windows or `./run.sh 
 |---|---|
 | `start` | Starts everything in Docker and waits until it is ready. It is the default. |
 | `stop` | Stops the containers. They stay stopped until the next start. |
-| `status` | Shows whether each container runs and is healthy, its version, and whether updates are automatic. |
+| `status` | Shows whether each container runs and is healthy, and its version. In a downloaded release, it also shows whether updates are automatic. |
 | `logs` | Follows the logs. Press Ctrl+C to stop following. |
 | `update` | Installs the newest release. In a Git clone, it pulls the latest code, rebuilds on fresh base images, and restarts, then deletes the build cache that no build used for a week. |
-| `schedule` | Installs new releases automatically every night at 04:00. |
+| `schedule` | Installs new releases automatically every night at 04:00. It works only in a downloaded release. |
 | `unschedule` | Stops installing new releases automatically. |
 | `local` | Runs the project in the terminal without Docker. Press Ctrl+C to stop it. |
+| `help` | Lists every action. |
 
 When a service crashes right after it starts, the script shows the end of its log and stops it, so it does not restart over and over.
 
-In a downloaded release, the `update` action downloads the newest image and takes the run, setup, and compose files from it.
+In a downloaded release, the `update` action downloads the newest image and takes the run, setup, and compose files, the scripts, `README.md`, and `.env.template` from it.
 `.env` and the other settings stay as they are.
 When the new release fails to start, it puts the previous image and files back, and later updates skip that release.
 The `schedule` action runs this update every night at 04:00, and each run writes what it did into `update.log`. With `UPDATE_WEBHOOK_URL` in `.env` set to a Discord webhook, an update that installs a new release or fails also posts a short message to that webhook's channel, naming the new versions or the problem. A night without a new release posts nothing. To get a webhook, open a channel's settings in Discord, choose Integrations, then Webhooks, then New Webhook, and copy its URL.
@@ -111,6 +112,7 @@ All configuration is read from environment variables or from a `.env` file in th
 |---|---|---|---|
 | `API_SECRET` | Yes | None | Shared bearer token of at least 16 characters. Callers must send this value in the `Authorization` header. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`. |
 | `LOG_LEVEL` | No | `INFO` | Log verbosity. Accepts `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`. Every log line, including uvicorn's access log, is one JSON object. |
+| `UPDATE_WEBHOOK_URL` | No | Not set | A Discord webhook that the nightly update posts to when it installs a new release or fails. The run script reads it, not the service. It works like a password. |
 
 ## Project structure
 
@@ -151,13 +153,13 @@ Use the GitHub template button to create a new repository based on this project.
 
 3. **Add configuration variables.** Extend the `Settings` class in `config.py` and document new variables in `.env.template`.
 
-4. **Add startup and shutdown logic.** Use the `lifespan` context manager in `main.py` to load models, open connections, or perform any one-time initialisation.
+4. **Add startup and shutdown logic.** Use the `lifespan` context manager in `main.py` to load models, open connections, or perform any one-time initialization.
 
 5. **Add endpoints.** Define new routes in `main.py`. Use `dependencies=[Depends(require_auth)]` to protect them. Add request and response models to `models.py`.
 
 6. **Remove the template endpoint.** Delete the `/template/echo` route and the `TemplateRequest`/`TemplateResponse` models once you have your own routes in place.
 
-7. **Update the `docker-compose.yml` port.** Change the host side of `8000:8000` to the port assigned to your service, such as `8001:8000`. The container itself keeps listening on port 8000.
+7. **Update `docker-compose.yml`.** Set `name:` to the new project name and `image:` to the image that the new repository publishes, such as `ghcr.io/<owner>/<repository>:latest`, so its containers and nightly update stay apart from other APIs. Change the host side of `8000:8000` to the port assigned to your service, such as `8001:8000`. The container itself keeps listening on port 8000.
 
 8. **Write tests.** Add test functions to `tests/test_api.py`. Leave `tests/test_shared.py` unchanged, because it is a core file.
 
@@ -173,7 +175,7 @@ The coding, prose, and commit conventions are documented in [dev-standards](http
 
 ## Calling protected endpoints
 
-All endpoints except `/health` require a bearer token in the `Authorization` header.
+All endpoints except `/health` and FastAPI's interactive docs at `/docs`, `/redoc`, and `/openapi.json` require a bearer token in the `Authorization` header.
 A request without the header or with a wrong token gets `401 Unauthorized` with a `WWW-Authenticate: Bearer` header:
 
 ```http
@@ -194,18 +196,6 @@ client = httpx.AsyncClient(
     headers={"Authorization": "Bearer your-secret-here"},
 )
 ```
-
-## Related services
-
-The following APIs were built from this template.
-They are private, so this list only names them.
-
-| Service | Description |
-|---|---|
-| api-media | Resolves YouTube, SoundCloud, and Spotify track metadata and stream URLs. |
-| api-scraper | Scrapes structured data from external websites. |
-| api-scheduler | Schedules persistent reminders delivered via Discord webhooks. |
-| api-morshu | Generates Morshu TTS audio and video from text. |
 
 ## License
 

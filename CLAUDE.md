@@ -1,7 +1,7 @@
 # api-template
 
 A FastAPI template for small HTTP services that bots and other clients call.
-Services such as api-media and api-scheduler are created from it.
+API services are created from it.
 The shared conventions live in [dev-standards](https://github.com/Lempki/dev-standards), and its README is the rulebook for code, prose, commits, and engineering guidelines.
 Read it before changing code. When the repositories are cloned side by side, the local copy is `../dev-standards/README.md`.
 

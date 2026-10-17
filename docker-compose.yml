@@ -1,5 +1,5 @@
-# The fixed project name keeps the containers and volumes the same, whatever this folder is called.
-# A downloaded release in a folder with a version in its name therefore finds the data of the previous one.
+# The fixed project name keeps the container and the update task the same, whatever this folder is called.
+# A downloaded release in a folder with a version in its name therefore replaces the previous one.
 name: api-template
 
 # Docker keeps at most two log files of 5 MB per container and overwrites the oldest.
