@@ -13,7 +13,7 @@ __all__ = ["MIN_SECRET_LENGTH", "ServiceSettings", "service_version"]
 
 MIN_SECRET_LENGTH = 16
 
-# Placeholders that have appeared in .env templates. A service must never run with one.
+# Placeholder secrets from .env templates, which a service must never run with.
 _PLACEHOLDER_SECRETS = frozenset({"changeme", "your-secret-here", "secret"})
 
 LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]

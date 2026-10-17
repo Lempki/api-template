@@ -127,6 +127,8 @@ api-template/
 │   └── models.py           # Pydantic request and response models.
 ├── tests/
 │   ├── test_api.py         # Tests for this service's own routes.
+│   ├── test_bootstrap.py   # Tests for the setup scripts' steps. Core file.
+│   ├── test_run.py         # Tests for the run scripts' actions. Core file.
 │   └── test_shared.py      # Tests for the shared auth, settings, logging, and version code.
 ├── Dockerfile
 ├── docker-compose.yml
@@ -147,7 +149,7 @@ api-template/
 
 Use the GitHub template button to create a new repository based on this project. Then follow these steps to customize it:
 
-1. **Rename the package.** In `pyproject.toml`, change the project `name` and the `packages` path under `[tool.hatch.build.targets.wheel]`. Rename the `src/api_template/` directory to match (e.g. `src/media_api/`). The source files import each other relatively, so only `tests/test_api.py` and the `CMD` line in `Dockerfile` name the package. Also set the new name as `package` under `[tool.dev-standards.template]` in `pyproject.toml` and as `known-first-party` in `ruff.toml`. Set `SERVICE` in `main.py` to the new project name, because the version is read from the installed project of that name. Then run `uv sync` so `uv.lock` records the new name.
+1. **Rename the package.** In `pyproject.toml`, change the project `name` and the `packages` path under `[tool.hatch.build.targets.wheel]`. Rename the `src/api_template/` directory to match, such as `src/my_service/`. The source files import each other relatively, so only `tests/test_api.py` and the `CMD` line in `Dockerfile` name the package. Also set the new name as `package` under `[tool.dev-standards.template]` in `pyproject.toml` and as `known-first-party` in `ruff.toml`. Set `SERVICE` in `main.py` to the new project name, because the version is read from the installed project of that name. Then run `uv sync` so `uv.lock` records the new name.
 
 2. **Add your dependencies.** Edit the `dependencies` list in `pyproject.toml`.
 

@@ -21,13 +21,14 @@ Read it before changing code. When the repositories are cloned side by side, the
 * `src/api_template/auth.py` holds the bearer token dependency that protects every route except `/health`.
 * `src/api_template/models.py` holds the request and response models.
 * `tests/test_shared.py` tests the shared modules and is a core file. `tests/test_api.py` tests this service's own routes.
+* `scripts/bootstrap.py` holds the steps of the setup scripts, and `scripts/run.py` the actions of the run scripts. `tests/test_bootstrap.py` and `tests/test_run.py` test them, and all four are core files.
 
 ## Template rules
 
 * `.template-manifest.toml` lists the core files that every derived API keeps identical to this template.
 * `setup.bat` and `setup.sh` only install uv and then run `scripts/bootstrap.py`, which does every other step. Keep it on the standard library, because it runs before the dependencies exist. It is identical in api-template and discord-bot-template, so change it in both.
 * `run.bat` and `run.sh` run `scripts/run.py`, which reuses the helpers in `scripts/bootstrap.py`. The same rules apply to it.
-* Change a core file here first. Derived APIs then pick it up with `dev-standards template-check --template <path-to-api-template> --apply`.
+* Change a core file here first. Derived APIs then pick it up with `dev-standards template-check --template ../api-template --apply`.
 * Service-specific behavior belongs in files outside the manifest, such as `main.py`, `config.py`, and `models.py`.
 * Keep the version only in pyproject.toml, and keep `SERVICE` in main.py equal to the project name there.
 * `uv run mypy src` must pass in strict mode, because CI runs it.

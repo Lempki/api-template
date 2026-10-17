@@ -1,7 +1,7 @@
 """Structured JSON logging for every api-* service.
 
 Each record becomes one JSON object per line, which log collectors can parse without guessing.
-The previous format string produced invalid JSON whenever a message contained a quote.
+json.dumps escapes quotes and line breaks in a message, so every line stays valid JSON.
 """
 
 import json
