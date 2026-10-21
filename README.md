@@ -19,7 +19,7 @@ This is a clean and minimal Python REST API template built with [FastAPI](https:
 
 * [Docker](https://docs.docker.com/get-docker/) and Docker Compose for containerized setup.
 
-Running without Docker requires Python 3.12 and [uv](https://docs.astral.sh/uv/). On Windows, install uv with `winget install --id astral-sh.uv`.
+Running without Docker requires Python 3.14 and [uv](https://docs.astral.sh/uv/). On Windows, install uv with `winget install --id astral-sh.uv`.
 
 ## Setup
 
@@ -40,7 +40,7 @@ chmod +x setup.sh
 
 The script asks before it installs anything, and it does the following:
 
-1. It installs [uv](https://docs.astral.sh/uv/) when uv is missing. uv also provides Python 3.12 when the machine lacks it.
+1. It installs [uv](https://docs.astral.sh/uv/) when uv is missing. uv also provides Python 3.14 when the machine lacks it.
 2. It offers to install Docker, and in a Git clone also the tools that the Docker image includes for running outside Docker. It uses winget on Windows, Homebrew on macOS, and the system package manager on Linux. On Windows it also turns on WSL, which Docker Desktop needs, and says when Windows needs a restart or virtualization is turned off in the firmware. It shows the computer's RAM and offers to cap the memory of Docker Desktop's virtual machine, at a suggested or your own size.
 3. In a Git clone, it runs `uv sync`, which installs the package and its locked dependencies into `.venv`.
 4. It copies `.env.template` to `.env` on the first run and fills `API_SECRET` with a random value.

@@ -1,7 +1,7 @@
 # The uv stage only supplies the uv binary. A named stage lets Dependabot keep its tag current.
-FROM ghcr.io/astral-sh/uv:0.13.0 AS uv
+FROM ghcr.io/astral-sh/uv:0.13.1 AS uv
 
-FROM python:3.12-slim AS builder
+FROM python:3.14-slim AS builder
 COPY --from=uv /uv /usr/local/bin/uv
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -13,7 +13,7 @@ RUN uv sync --frozen --no-dev --no-install-project
 COPY src/ src/
 RUN uv sync --frozen --no-dev --no-editable
 
-FROM python:3.12-slim AS runtime
+FROM python:3.14-slim AS runtime
 RUN useradd --create-home appuser
 WORKDIR /app
 # The virtual environment holds the installed package, so the runtime image needs no source tree.
