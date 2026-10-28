@@ -52,4 +52,7 @@ path = ".github/dependabot.yml"
 path = ".github/workflows/release.yml"
 
 [[file]]
+path = ".github/smoke-test.sh"
+
+[[file]]
 path = ".github/ISSUE_TEMPLATE/idea.yml"
