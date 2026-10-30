@@ -127,6 +127,39 @@ def test_request_urls_from_http_clients_are_not_logged() -> None:
         logging_config.configure_logging("INFO")
 
 
+def access_record(path: str, status: int) -> logging.LogRecord:
+    """Builds the record that uvicorn logs for a request."""
+    return logging.LogRecord(
+        "uvicorn.access",
+        logging.INFO,
+        __file__,
+        1,
+        '%s - "%s %s HTTP/%s" %d',
+        ("127.0.0.1:5000", "GET", path, "1.1", status),
+        None,
+    )
+
+
+@pytest.mark.parametrize(
+    ("path", "status", "logged"),
+    [
+        ("/health", 200, False),
+        # A failing health check is worth seeing.
+        ("/health", 503, True),
+        ("/media/info", 200, True),
+        ("/health?verbose=1", 200, True),
+    ],
+)
+def test_successful_health_checks_stay_out_of_the_access_log(
+    path: str, status: int, logged: bool
+) -> None:
+    logging_config.configure_logging("INFO")
+    access = logging.getLogger("uvicorn.access")
+
+    # A logger's filter returns the record that passes, or False.
+    assert bool(access.filter(access_record(path, status))) is logged
+
+
 def test_json_log_lines_include_exceptions() -> None:
     try:
         raise ValueError("boom")
