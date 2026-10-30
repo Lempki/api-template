@@ -18,6 +18,7 @@ Read it before changing code. When the repositories are cloned side by side, the
 * `src/api_template/config.py` adds this service's settings to `ServiceSettings`.
 * `src/api_template/service.py` holds `ServiceSettings`, which validates the shared secret, and `service_version()`, which reads the version from pyproject.toml.
 * `src/api_template/logging_config.py` turns every log record, including uvicorn's, into one JSON line.
+* `src/api_template/request_id.py` holds the middleware that gives each request an ID, from the caller's X-Request-ID header or a new one. The JSON lines name it, and the response returns it.
 * `src/api_template/auth.py` holds the bearer token dependency that protects every route except `/health`.
 * `src/api_template/models.py` holds the request and response models.
 * `tests/test_shared.py` tests the shared modules and is a core file. `tests/test_api.py` tests this service's own routes.

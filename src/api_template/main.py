@@ -9,6 +9,7 @@ from .auth import require_auth
 from .config import get_settings
 from .logging_config import configure_logging
 from .models import HealthResponse, TemplateRequest, TemplateResponse
+from .request_id import RequestIdMiddleware
 from .service import service_version
 
 # The service name is also the project name in pyproject.toml, which the version is read from.
@@ -28,6 +29,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(title=SERVICE, version=VERSION, lifespan=lifespan)
+# Each request gets an ID that its log lines carry, so they match the caller's lines.
+app.add_middleware(RequestIdMiddleware)
 
 
 @app.get("/health", response_model=HealthResponse)

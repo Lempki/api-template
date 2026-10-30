@@ -13,6 +13,9 @@ path = "src/{package}/logging_config.py"
 path = "src/{package}/service.py"
 
 [[file]]
+path = "src/{package}/request_id.py"
+
+[[file]]
 path = "tests/test_shared.py"
 
 [[file]]

@@ -123,6 +123,7 @@ api-template/
 │   ├── config.py           # This service's settings on top of ServiceSettings.
 │   ├── service.py          # Shared settings, secret validation, and the version lookup.
 │   ├── logging_config.py   # JSON logging for every logger, including uvicorn's.
+│   ├── request_id.py       # Request IDs from X-Request-ID, which every log line of a request names.
 │   ├── auth.py             # Bearer token dependency used to protect endpoints.
 │   └── models.py           # Pydantic request and response models.
 ├── tests/

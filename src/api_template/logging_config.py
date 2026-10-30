@@ -9,6 +9,8 @@ import logging
 import logging.config
 from typing import Any
 
+from .request_id import current_request_id
+
 __all__ = ["JsonFormatter", "QuietHealthChecks", "configure_logging"]
 
 
@@ -23,6 +25,9 @@ class JsonFormatter(logging.Formatter):
             "logger": record.name,
             "message": record.getMessage(),
         }
+        # A line written while a request runs names it, so it can be matched with the client's.
+        if (request_id := current_request_id()) is not None:
+            payload["request_id"] = request_id
         if record.exc_info:
             payload["exception"] = self.formatException(record.exc_info)
         return json.dumps(payload, ensure_ascii=False)

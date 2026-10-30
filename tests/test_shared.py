@@ -10,6 +10,7 @@ import logging
 import os
 import sys
 import tomllib
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
@@ -30,6 +31,7 @@ auth = importlib.import_module(f"{PACKAGE}.auth")
 config = importlib.import_module(f"{PACKAGE}.config")
 logging_config = importlib.import_module(f"{PACKAGE}.logging_config")
 main = importlib.import_module(f"{PACKAGE}.main")
+request_id = importlib.import_module(f"{PACKAGE}.request_id")
 service = importlib.import_module(f"{PACKAGE}.service")
 
 # A minimal app with one protected route tests the auth dependency without any service's routes.
@@ -169,3 +171,69 @@ def test_json_log_lines_include_exceptions() -> None:
         )
     line = json.loads(logging_config.JsonFormatter().format(record))
     assert "ValueError: boom" in line["exception"]
+
+
+class _JsonLines(logging.Handler):
+    """Keeps every record as the JSON line it would print, formatted when it is logged."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.lines: list[dict[str, str]] = []
+        self.setFormatter(logging_config.JsonFormatter())
+
+    def emit(self, record: logging.LogRecord) -> None:
+        self.lines.append(json.loads(self.format(record)))
+
+
+_traced = FastAPI()
+_traced.add_middleware(request_id.RequestIdMiddleware)
+
+
+@_traced.get("/work")
+async def _work() -> dict[str, bool]:
+    logging.getLogger("svc").warning("Working.")
+    return {"ok": True}
+
+
+@pytest.fixture
+def json_lines() -> Iterator[_JsonLines]:
+    handler = _JsonLines()
+    logger = logging.getLogger("svc")
+    logger.addHandler(handler)
+    try:
+        yield handler
+    finally:
+        logger.removeHandler(handler)
+
+
+@pytest.mark.parametrize(
+    ("sent", "kept"),
+    [
+        ("1234567890123456789", True),
+        ("abc.DEF_1-2", True),
+        # An ID that could break a log line, or one that is too long, is replaced.
+        ("bad id\nINFO fake line", False),
+        ("x" * 65, False),
+        (None, False),
+    ],
+)
+def test_each_request_gets_an_id_that_its_log_lines_carry(
+    json_lines: _JsonLines, sent: str | None, kept: bool
+) -> None:
+    headers = {request_id.HEADER: sent} if sent is not None else {}
+
+    response = TestClient(_traced).get("/work", headers=headers)
+
+    returned = response.headers[request_id.HEADER]
+    if kept:
+        assert returned == sent
+    else:
+        assert returned != sent and len(returned) == 12
+    [line] = [line for line in json_lines.lines if line["message"] == "Working."]
+    assert line["request_id"] == returned
+
+
+def test_lines_outside_a_request_carry_no_id(json_lines: _JsonLines) -> None:
+    logging.getLogger("svc").warning("Idle.")
+
+    assert "request_id" not in json_lines.lines[0]
