@@ -113,6 +113,7 @@ All configuration is read from environment variables or from a `.env` file in th
 | `API_SECRET` | Yes | None | Shared bearer token of at least 16 characters. Callers must send this value in the `Authorization` header. Generate one with `python -c "import secrets; print(secrets.token_urlsafe(32))"`. |
 | `LOG_LEVEL` | No | `INFO` | Log verbosity. Accepts `DEBUG`, `INFO`, `WARNING`, `ERROR`, or `CRITICAL`. Every log line, including uvicorn's access log, is one JSON object. |
 | `UPDATE_WEBHOOK_URL` | No | Not set | A Discord webhook that the nightly update posts to when it installs a new release or fails. The run script reads it, not the service. It works like a password. |
+| `DISPLAY_NAME` | No | The service's name | The name that update notices in Discord call the project by, such as `OSRS Market Bot`. |
 
 ## Project structure
 
